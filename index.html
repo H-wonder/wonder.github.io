@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM_ROOT // 个人终端</title>
+    <style>
+        /* =========================================
+           CSS 变量定义
+           ========================================= */
+        :root {
+            --bg-color: #03060f;
+            --main-cyan: #0ff;
+            --main-blue: #0066ff;
+            --main-pink: #f0f;
+            --text-main: #c7d2fe;
+            --text-dark: #4f5b93;
+            --scanline-color: rgba(0, 255, 255, 0.03);
+            --panel-bg: rgba(10, 15, 30, 0.7);
+        }
+
+        /* =========================================
+           全局重置与背景特效
+           ========================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Fira Code', 'Consolas', 'Courier New', monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 102, 255, 0.1) 0%, transparent 60%),
+                linear-gradient(0deg, transparent 24%, var(--scanline-color) 25%, var(--scanline-color) 26%, transparent 27%, transparent 74%, var(--scanline-color) 75%, var(--scanline-color) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, var(--scanline-color) 25%, var(--scanline-color) 26%, transparent 27%, transparent 74%, var(--scanline-color) 75%, var(--scanline-color) 76%, transparent 77%, transparent);
+            background-size: 100% 100%, 50px 50px, 50px 50px;
+        }
+
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* =========================================
+           头部：Glitch (故障) 文字特效
+           ========================================= */
+        header {
+            text-align: left;
+            margin-bottom: 60px;
+            border-bottom: 2px solid var(--text-dark);
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 150px;
+            height: 2px;
+            background: var(--main-cyan);
+            box-shadow: 0 0 10px var(--main-cyan);
+            animation: scanWidth 3s infinite alternate;
+        }
+
+        .name-glitch {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #fff;
+            position: relative;
+            display: inline-block;
+            text-shadow: 0 0 10px var(--main-blue);
+        }
+
+        .name-glitch::before, .name-glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+        }
+        .name-glitch::before {
+            left: 3px;
+            text-shadow: -2px 0 var(--main-pink);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+        .name-glitch::after {
+            left: -3px;
+            text-shadow: -2px 0 var(--main-cyan);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+
+        .college {
+            font-size: 1.2rem;
+            color: var(--main-cyan);
+            margin-top: 10px;
+            letter-spacing: 2px;
+        }
+
+        .college span { color: var(--text-dark); }
+
+        /* =========================================
+           模块标题样式 (HUD 风格)
+           ========================================= */
+        .section-title {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            margin-top: 60px;
+        }
+        .section-title::before {
+            content: '>>';
+            color: var(--main-cyan);
+            margin-right: 15px;
+            font-weight: bold;
+            animation: blink 1s infinite;
+        }
+
+        /* =========================================
+           终端控制台 (个人介绍)
+           ========================================= */
+        .terminal-box {
+            background: rgba(5, 9, 20, 0.9);
+            border: 1px solid #333;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 255, 255, 0.1) inset;
+            margin-bottom: 60px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .terminal-header {
+            background: #1a1e29;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .terminal-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .terminal-buttons span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .btn-close { background: #ff5f56; }
+        .btn-min { background: #ffbd2e; }
+        .btn-max { background: #27c93f; }
+
+        .terminal-title {
+            color: #8892b0;
+            font-size: 0.9rem;
+            margin-left: 20px;
+        }
+
+        .terminal-body {
+            padding: 30px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #a8b2d1;
+        }
+
+        .prompt { color: var(--main-pink); margin-right: 10px; font-weight: bold;}
+        .command { color: var(--main-cyan); }
+        .response { margin-top: 15px; margin-bottom: 25px; border-left: 2px solid #333; padding-left: 15px; }
+        
+        /* =========================================
+           优势卡片矩阵 (2x2 布局设计)
+           ========================================= */
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+        }
+
+        .cyber-card {
+            background: var(--panel-bg);
+            clip-path: polygon(0 0, calc(100% - 30px) 0, 100% 30px, 100% 100%, 30px 100%, 0 calc(100% - 30px));
+            padding: 2px; 
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .cyber-card-inner {
+            background: #070a13;
+            height: 100%;
+            padding: 30px;
+            clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 28px 100%, 0 calc(100% - 28px));
+            position: relative;
+            z-index: 1;
+        }
+
+        .cyber-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(45deg, var(--main-cyan), transparent, var(--main-pink));
+            z-index: 0;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .cyber-card:hover { transform: translateY(-10px); }
+        .cyber-card:hover::before { opacity: 1; }
+
+        .card-id {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            letter-spacing: 2px;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            color: #fff;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .card-title span { color: var(--main-cyan); }
+
+        .card-desc {
+            color: #8892b0;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .tech-tags {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tech-tag {
+            font-size: 0.8rem;
+            color: var(--main-cyan);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            padding: 4px 10px;
+            background: rgba(0, 255, 255, 0.05);
+        }
+
+        /* =========================================
+           联系方式模块 (Social Links)
+           ========================================= */
+        .social-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-bottom: 40px;
+        }
+
+        .social-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border: 1px solid var(--main-cyan);
+            color: var(--main-cyan);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: rgba(0, 255, 255, 0.05);
+            position: relative;
+            /* [修复 Bug 的核心代码]：裁剪溢出的扫光伪元素，防止撑大容器导致抖动 */
+            overflow: hidden; 
+            transition: all 0.3s ease;
+            box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.1);
+            cursor: pointer; /* 确保鼠标放上去是点击手势 */
+        }
+
+        .social-btn:hover {
+            background: var(--main-cyan);
+            color: #000;
+            box-shadow: 0 0 20px var(--main-cyan), inset 0 0 10px rgba(255, 255, 255, 0.5);
+            text-shadow: none;
+        }
+
+        .social-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .social-btn:hover::before {
+            left: 100%;
+        }
+
+        /* =========================================
+           响应式适配
+           ========================================= */
+        @media (max-width: 800px) {
+            .advantages-grid { grid-template-columns: 1fr; }
+            .name-glitch { font-size: 2.5rem; }
+            .terminal-body { font-size: 1rem; padding: 20px; }
+            .social-btn { width: 100%; text-align: center; }
+        }
+
+        /* =========================================
+           动画关键帧定义
+           ========================================= */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        @keyframes scanWidth {
+            0% { width: 50px; }
+            100% { width: 250px; }
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(44px, 9999px, 86px, 0); transform: skew(0.65deg); }
+            20% { clip: rect(98px, 9999px, 16px, 0); transform: skew(0.38deg); }
+            40% { clip: rect(69px, 9999px, 47px, 0); transform: skew(0.79deg); }
+            60% { clip: rect(23px, 9999px, 11px, 0); transform: skew(0.93deg); }
+            80% { clip: rect(80px, 9999px, 5px, 0); transform: skew(0.67deg); }
+            100% { clip: rect(12px, 9999px, 59px, 0); transform: skew(0.48deg); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); transform: skew(0.91deg); }
+            20% { clip: rect(14px, 9999px, 35px, 0); transform: skew(0.65deg); }
+            40% { clip: rect(84px, 9999px, 92px, 0); transform: skew(0.01deg); }
+            60% { clip: rect(32px, 9999px, 63px, 0); transform: skew(0.47deg); }
+            80% { clip: rect(72px, 9999px, 20px, 0); transform: skew(0.96deg); }
+            100% { clip: rect(56px, 9999px, 45px, 0); transform: skew(0.24deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="name-glitch" data-text="霍建杰">霍建杰</div>
+            <div class="college">SYS.LOC <span>//</span> 计算机学院-软件工程</div>
+        </header>
+
+        <section>
+            <h2 class="section-title" style="margin-top: 0;">USER_PROFILE.exe</h2>
+            <div class="terminal-box">
+                <div class="terminal-header">
+                    <div class="terminal-buttons">
+                        <span class="btn-close"></span>
+                        <span class="btn-min"></span>
+                        <span class="btn-max"></span>
+                    </div>
+                    <div class="terminal-title">bash - root@localhost:~</div>
+                </div>
+                <div class="terminal-body">
+                    <div><span class="prompt">root@localhost:~$</span> <span class="command">cat 霍建杰.txt</span></div>
+                    <div class="response">
+                        Loading bio... [OK]<br><br>
+                        你好，我是来自计算机学院的霍建杰。<br>
+                        我自认是一个比较外向乐观的人，始终保持昂扬的斗志和坚定成为有为之人的决心。我热衷于和不同性格和专业的同学结交，想要在有限的人生中看到更多的风景，体验多彩的人生。<br>
+                        无论是穿梭于Linux服务器的命令行，还是从零到一构建出一个能够执行的程序，亦或是通过数学建模将现实问题抽象为算法模型，我都乐在其中。保持极客精神，用代码重构世界。<br>
+                        期待在自强创业班中结交更多朋友，获得更多体验。
+                    </div>
+                    <div><span class="prompt">root@localhost:~$</span> <span class="command">./execute_skills.sh <span style="animation: blink 1s infinite;">_</span></span></div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">CORE_MODULES // 核心优势与技术栈</h2>
+            <div class="advantages-grid">
+                
+                <div class="cyber-card">
+                    <div class="cyber-card-inner">
+                        <div class="card-id">SYS.01</div>
+                        <h3 class="card-title"><span>#</span> 核心编程与后端</h3>
+                        <p class="card-desc">熟练掌握 C++ 与 Python 核心特性。能够使用 C++ 进行高性能底层逻辑开发与内存管理；同时精通运用 Python 及 FastAPI 等现代异步框架构建高吞吐量的 RESTful API 与 Web 服务。</p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">C++</span>
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">FastAPI</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cyber-card">
+                    <div class="cyber-card-inner">
+                        <div class="card-id">ALG.02</div>
+                        <h3 class="card-title"><span>#</span> 算法与数据结构</h3>
+                        <p class="card-desc">具备扎实的算法基础与逻辑推演能力。对深度优先搜索 (DFS)、二分查找、递归树等经典算法有深刻理解，在开发中能够精准评估时间与空间复杂度，写出最优解代码。</p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">DFS/BFS</span>
+                            <span class="tech-tag">Time Complexity</span>
+                            <span class="tech-tag">Data Structures</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cyber-card">
+                    <div class="cyber-card-inner">
+                        <div class="card-id">ENV.03</div>
+                        <h3 class="card-title"><span>#</span> Linux 系统运维</h3>
+                        <p class="card-desc"> Linux 用户，日常工作高度依赖 Ubuntu 环境。熟练进行 Shell 脚本编写、系统权限配置 (chmod等)、进程管理及环境部署，具备独立排查Bug的极客直觉。</p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Linux / Ubuntu</span>
+                            <span class="tech-tag">Shell Script</span>
+                            <span class="tech-tag">CLI</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cyber-card">
+                    <div class="cyber-card-inner">
+                        <div class="card-id">MOD.04</div>
+                        <h3 class="card-title"><span>#</span> 软件工程构建</h3>
+                        <p class="card-desc">喜欢从GitHub上寻找开源项目本地部署，能够借助开源项目orVibecoding进行想法的落地，能够解决中等难度的软件工程项目构建。</p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">GitHub</span>
+                            <span class="tech-tag">Vibe Coding</span>
+                            <span class="tech-tag">Software Project</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="contact">
+            <h2 class="section-title">NETWORK_LINKS // 联系与链接</h2>
+            <div class="social-container">
+                <a href="https://github.com/H-wonder" target="_blank" class="social-btn">[ GITHUB_REPO ]</a>
+                
+                <a href="#" onclick="event.preventDefault(); this.innerText='2825191095@qq.com'; this.style.textTransform='none';" class="social-btn">[ SEND_EMAIL ]</a>
+                
+                <a href="#" target="_blank" class="social-btn">[ LEETCODE_PROFILE ]</a>
+                <a href="#" target="_blank" class="social-btn">[ TECH_BLOG ]</a>
+            </div>
+        </section>
+    </div>
+
+</body>
+</html>
