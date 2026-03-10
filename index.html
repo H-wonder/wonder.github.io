@@ -4,348 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SYSTEM_ROOT // 个人终端 - 霍建杰</title>
-    <style>
-        /* =========================================
-           CSS 变量与基础设定
-           ========================================= */
-        :root {
-            --bg-color: #03060f;
-            --main-cyan: #0ff;
-            --main-blue: #0066ff;
-            --main-pink: #f0f;
-            --text-main: #c7d2fe;
-            --text-dark: #4f5b93;
-            --panel-bg: rgba(10, 15, 30, 0.75);
-            --transition-smooth: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Fira Code', 'Consolas', 'Courier New', monospace;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            overflow-x: hidden;
-            min-height: 100vh;
-            /* 自定义滚动条 */
-            scrollbar-width: thin;
-            scrollbar-color: var(--main-cyan) var(--bg-color);
-        }
-
-        body::-webkit-scrollbar { width: 8px; }
-        body::-webkit-scrollbar-track { background: var(--bg-color); }
-        body::-webkit-scrollbar-thumb { background: var(--main-cyan); border-radius: 4px; }
-
-        /* =========================================
-           背景特效层 (Canvas + Scanlines)
-           ========================================= */
-        #canvas-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 0;
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        .scanlines {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            background-size: 100% 4px, 6px 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 80px 20px;
-            position: relative;
-            z-index: 10;
-        }
-
-        /* =========================================
-           头部：Glitch 故障特效
-           ========================================= */
-        header {
-            margin-bottom: 80px;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-            padding-bottom: 20px;
-            position: relative;
-        }
-
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            width: 150px;
-            height: 2px;
-            background: var(--main-cyan);
-            box-shadow: 0 0 15px var(--main-cyan);
-            animation: scanWidth 4s ease-in-out infinite alternate;
-        }
-
-        .name-glitch {
-            font-size: 4.5rem;
-            font-weight: 900;
-            color: #fff;
-            position: relative;
-            display: inline-block;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .name-glitch::before, .name-glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color);
-        }
-        .name-glitch::before {
-            left: 4px; text-shadow: -2px 0 var(--main-pink);
-            animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
-        }
-        .name-glitch::after {
-            left: -4px; text-shadow: -2px 0 var(--main-cyan);
-            animation: glitch-anim-2 3s infinite linear alternate-reverse;
-        }
-
-        .college {
-            font-size: 1.2rem;
-            color: var(--main-cyan);
-            margin-top: 15px;
-            letter-spacing: 3px;
-        }
-        .college span { color: var(--text-dark); }
-
-        /* =========================================
-           通用 UI 组件
-           ========================================= */
-        .section-title {
-            font-size: 1.6rem;
-            color: #fff;
-            margin: 60px 0 30px 0;
-            display: flex;
-            align-items: center;
-        }
-        .section-title::before {
-            content: '>>';
-            color: var(--main-cyan);
-            margin-right: 15px;
-            animation: blink 1s infinite step-end;
-        }
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-        }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* =========================================
-           交互式终端 (Terminal)
-           ========================================= */
-        .terminal-box {
-            background: var(--panel-bg);
-            border: 1px solid rgba(0, 255, 255, 0.1);
-            border-radius: 8px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            margin-bottom: 60px;
-            overflow: hidden;
-        }
-
-        .terminal-header {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .terminal-buttons { display: flex; gap: 8px; }
-        .terminal-buttons span { width: 14px; height: 14px; border-radius: 50%; }
-        .btn-close { background: #ff5f56; }
-        .btn-min { background: #ffbd2e; }
-        .btn-max { background: #27c93f; }
-
-        .terminal-title { color: #6b7280; font-size: 0.9rem; margin-left: auto; margin-right: auto; }
-
-        .terminal-body {
-            padding: 30px;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #a8b2d1;
-            min-height: 250px;
-        }
-
-        .prompt { color: var(--main-pink); margin-right: 10px; font-weight: bold; }
-        .command { color: var(--main-cyan); }
-        .cursor { display: inline-block; width: 8px; height: 1.1em; background: var(--main-cyan); vertical-align: middle; animation: blink 1s step-end infinite; }
-
-        /* =========================================
-           3D 悬浮卡片矩阵
-           ========================================= */
-        .advantages-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            perspective: 1000px; /* 开启 3D 空间 */
-        }
-
-        .cyber-card {
-            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), transparent);
-            padding: 1px; 
-            border-radius: 4px;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease-out; /* 响应鼠标 */
-            cursor: crosshair;
-        }
-
-        .cyber-card-inner {
-            background: #070a13;
-            height: 100%;
-            padding: 35px 30px;
-            border-radius: 3px;
-            position: relative;
-            z-index: 1;
-            transform: translateZ(20px); /* 3D 悬浮效果 */
-            box-shadow: inset 0 0 0 1px rgba(0, 255, 255, 0.1);
-            transition: var(--transition-smooth);
-        }
-
-        .cyber-card:hover .cyber-card-inner {
-            box-shadow: inset 0 0 0 1px var(--main-cyan), 0 10px 30px rgba(0, 255, 255, 0.1);
-        }
-
-        .card-id {
-            position: absolute;
-            top: 20px; right: 20px;
-            font-size: 0.8rem;
-            color: var(--text-dark);
-            font-weight: bold;
-        }
-
-        .card-title {
-            font-size: 1.3rem;
-            color: #fff;
-            margin-bottom: 20px;
-            transform: translateZ(30px);
-        }
-        .card-title span { color: var(--main-cyan); }
-
-        .card-desc {
-            color: #8892b0;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            transform: translateZ(20px);
-        }
-
-        .tech-tags {
-            margin-top: 25px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            transform: translateZ(40px);
-        }
-
-        .tech-tag {
-            font-size: 0.8rem;
-            color: var(--main-cyan);
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            padding: 4px 12px;
-            border-radius: 20px;
-            background: rgba(0, 255, 255, 0.05);
-            transition: var(--transition-smooth);
-        }
-        .cyber-card:hover .tech-tag {
-            background: rgba(0, 255, 255, 0.15);
-            border-color: var(--main-cyan);
-        }
-
-        /* =========================================
-           社交链接按钮 (磁性吸附风格)
-           ========================================= */
-        .social-container {
-            display: flex;
-            gap: 25px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-
-        .social-btn {
-            display: inline-block;
-            padding: 15px 35px;
-            border: 1px solid var(--text-dark);
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-            position: relative;
-            overflow: hidden;
-            transition: var(--transition-smooth);
-            background: transparent;
-        }
-
-        .social-btn::before {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; width: 100%; height: 0%;
-            background: var(--main-cyan);
-            transition: var(--transition-smooth);
-            z-index: -1;
-        }
-
-        .social-btn:hover {
-            color: #000;
-            border-color: var(--main-cyan);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-        }
-
-        .social-btn:hover::before { height: 100%; }
-
-        /* =========================================
-           动画关键帧
-           ========================================= */
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        @keyframes scanWidth { 0% { width: 50px; } 100% { width: 300px; } }
-        @keyframes glitch-anim-1 {
-            0% { clip: rect(20px, 9999px, 80px, 0); }
-            20% { clip: rect(60px, 9999px, 10px, 0); }
-            40% { clip: rect(10px, 9999px, 50px, 0); }
-            60% { clip: rect(80px, 9999px, 20px, 0); }
-            80% { clip: rect(30px, 9999px, 90px, 0); }
-            100% { clip: rect(50px, 9999px, 40px, 0); }
-        }
-        @keyframes glitch-anim-2 {
-            0% { clip: rect(10px, 9999px, 40px, 0); }
-            20% { clip: rect(80px, 9999px, 20px, 0); }
-            40% { clip: rect(30px, 9999px, 90px, 0); }
-            60% { clip: rect(50px, 9999px, 10px, 0); }
-            80% { clip: rect(20px, 9999px, 60px, 0); }
-            100% { clip: rect(90px, 9999px, 30px, 0); }
-        }
-
-        @media (max-width: 768px) {
-            .name-glitch { font-size: 2.8rem; }
-            .terminal-body { font-size: 0.95rem; }
-            .social-btn { width: 100%; text-align: center; }
-        }
-    </style>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 
@@ -355,7 +14,7 @@
     <div class="container">
         <header class="reveal">
             <div class="name-glitch" data-text="霍建杰">霍建杰</div>
-            <div class="college">SYS.LOC <span>//</span> 计算机学院-软件工程</div>
+            <div class="college">SYS.LOC <span>//</span> 计算机学院-软件工程 <span>//</span> 寻找实习机会</div>
         </header>
 
         <section class="reveal">
@@ -375,56 +34,46 @@
 
         <section class="reveal">
             <h2 class="section-title">CORE_MODULES // 核心优势与技术栈</h2>
-            <div class="advantages-grid">
+            <div class="advantages-vertical">
                 
-                <div class="cyber-card">
-                    <div class="cyber-card-inner">
-                        <div class="card-id">SYS.01</div>
-                        <h3 class="card-title"><span>#</span> 核心编程与后端</h3>
-                        <p class="card-desc">熟练掌握 C++ 与 Python 核心特性。能够使用 C++ 进行高性能底层逻辑开发；同时精通运用 Python 及现代异步框架构建高并发的 RESTful API 与 Web 服务系统。</p>
+                <div class="cyber-row-card reveal-item">
+                    <div class="card-id">SYS.01</div>
+                    <div class="card-content">
+                        <h3 class="card-title"><span>#</span> 核心编程与后端架构</h3>
+                        <p class="card-desc">具备扎实的编程内功，精通 <strong>Python</strong> 与 C++。能够熟练运用现代框架构建高吞吐量的 RESTful API 与 Web 服务。注重代码规范与设计模式，能在复杂的业务逻辑中设计出低耦合、高内聚的系统架构。</p>
                         <div class="tech-tags">
-                            <span class="tech-tag">C++11/14</span>
                             <span class="tech-tag">Python 3</span>
-                            <span class="tech-tag">FastAPI</span>
+                            <span class="tech-tag">C++14</span>
+                            <span class="tech-tag">RESTful API</span>
+                            <span class="tech-tag">System Design</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="cyber-card">
-                    <div class="cyber-card-inner">
-                        <div class="card-id">ALG.02</div>
-                        <h3 class="card-title"><span>#</span> 算法与数据结构</h3>
-                        <p class="card-desc">具备扎实的算法功底与逻辑抽象能力。对 DFS/BFS、动态规划等复杂算法有深刻理解，能够在业务开发中精准评估时空复杂度，设计并实现最优解架构。</p>
+                <div class="cyber-row-card reveal-item">
+                    <div class="card-id">AI.02</div>
+                    <div class="card-content">
+                        <h3 class="card-title"><span>#</span> 机器学习与工程落地</h3>
+                        <p class="card-desc">对 AI 应用落地有浓厚兴趣与实践经验。主导开发了基于 <strong>PaddleOCR 3.4</strong> 的高精度文档解析系统，解决了复杂版面识别与结构化数据提取的痛点。能够将前沿的机器学习算法有效集成到现有的软件工程链路中。</p>
                         <div class="tech-tags">
-                            <span class="tech-tag">Algorithms</span>
-                            <span class="tech-tag">Data Structures</span>
-                            <span class="tech-tag">Optimization</span>
+                            <span class="tech-tag">Machine Learning</span>
+                            <span class="tech-tag">PaddleOCR 3.4</span>
+                            <span class="tech-tag">Data Parsing</span>
+                            <span class="tech-tag">Algorithm Integration</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="cyber-card">
-                    <div class="cyber-card-inner">
-                        <div class="card-id">ENV.03</div>
-                        <h3 class="card-title"><span>#</span> Linux 系统运维</h3>
-                        <p class="card-desc">重度 Linux 极客用户，日常开发环境高度定制化 Ubuntu。熟练编写 Shell 自动化脚本，精通系统权限、进程调度及网络配置，具备独立排查复杂环境 Bug 的能力。</p>
+                <div class="cyber-row-card reveal-item">
+                    <div class="card-id">ENV.03</div>
+                    <div class="card-content">
+                        <h3 class="card-title"><span>#</span> Linux 生态与运维部署</h3>
+                        <p class="card-desc">重度 Linux 极客用户，长期将 <strong>Ubuntu 22.04</strong> 作为绝对的日常主力开发环境。精通 Shell 自动化脚本编写、系统权限管控及网络环境配置。熟练使用 Docker 等容器化技术，具备独立完成从代码到服务器部署的全流程能力。</p>
                         <div class="tech-tags">
-                            <span class="tech-tag">Ubuntu/Debian</span>
+                            <span class="tech-tag">Ubuntu 22.04</span>
                             <span class="tech-tag">Shell Script</span>
-                            <span class="tech-tag">Sysadmin</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="cyber-card">
-                    <div class="cyber-card-inner">
-                        <div class="card-id">MOD.04</div>
-                        <h3 class="card-title"><span>#</span> 软件工程构建</h3>
-                        <p class="card-desc">熟悉现代软件工程生命周期。善于在 GitHub 深度挖掘并二次开发开源项目，掌握 CI/CD 基础与版本控制规范，能够将天马行空的 Idea 落地为健壮的工程项目。</p>
-                        <div class="tech-tags">
-                            <span class="tech-tag">Git / GitHub</span>
-                            <span class="tech-tag">Vibe Coding</span>
-                            <span class="tech-tag">Architecture</span>
+                            <span class="tech-tag">Docker</span>
+                            <span class="tech-tag">CI/CD</span>
                         </div>
                     </div>
                 </div>
@@ -433,6 +82,64 @@
         </section>
 
         <section class="reveal">
+            <h2 class="section-title">EXP_LOGS // 经历与项目</h2>
+            <div class="timeline">
+                
+                <div class="timeline-item reveal-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2026.01 - 至今</div>
+                    <div class="timeline-content cyber-panel">
+                        <h3>独立全栈项目 <span>//</span> 娱乐节目(DWTS)综合分析平台</h3>
+                        <p>针对大型互动电视节目(Dancing with the Stars)开发的数据分析与展示系统。通过爬虫技术采集多维度互动数据，使用 Python 进行数据清洗与特征提取，并构建了可视化的前端面板，展现了优秀的独立数据处理与工程构建能力。</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item reveal-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2024.09 - 2025.06</div>
+                    <div class="timeline-content cyber-panel">
+                        <h3>自强创业班 <span>//</span> 核心技术成员</h3>
+                        <p>在自强创业班期间，负责多个初创项目的基础技术架构选型与 Demo 搭建。热衷于在 GitHub 深度挖掘开源项目，通过 Vibe Coding 的方式快速将产品 Idea 落地，积累了丰富的敏捷开发与团队协作经验。</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="reveal">
+            <h2 class="section-title">ACHIEVEMENTS // 荣誉与奖项</h2>
+            <div class="awards-grid">
+                <div class="award-card reveal-item">
+                    <div class="award-icon">🏆</div>
+                    <h4>国家级或省级专业竞赛 奖项</h4>
+                    <p>2025年度 // 展现出色的算法与工程能力</p>
+                </div>
+                <div class="award-card reveal-item">
+                    <div class="award-icon">🥇</div>
+                    <h4>校级一等奖学金</h4>
+                    <p>2024-2025学年 // 保持专业排名前列</p>
+                </div>
+                <div class="award-card reveal-item">
+                    <div class="award-icon">💻</div>
+                    <h4>优秀开源贡献者</h4>
+                    <p>参与多个开源项目的 Issues 与 PR 修复</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="reveal resume-section">
+            <div class="resume-box">
+                <div class="resume-info">
+                    <h3>READY_FOR_INTERNSHIP // 期待加入您的团队</h3>
+                    <p>如果您正在寻找一位对技术充满热情、具备极客精神且拥有扎实工程能力的实习生，欢迎查阅我的完整简历。我随时准备好迎接新的技术挑战。</p>
+                </div>
+                <a href="./assets/霍建杰_简历.pdf" download="霍建杰_前端后端_实习简历.pdf" class="download-btn">
+                    <span class="btn-icon">📥</span> [ 提取完整简历.PDF ]
+                </a>
+            </div>
+        </section>
+
+        <section class="reveal" id="contact">
             <h2 class="section-title">NETWORK_LINKS // 通信协议链接</h2>
             <div class="social-container">
                 <a href="https://github.com/H-wonder" target="_blank" class="social-btn">[ GITHUB_REPO ]</a>
@@ -441,218 +148,12 @@
                 <a href="#" target="_blank" class="social-btn">[ TECH_BLOG ]</a>
             </div>
         </section>
+        
+        <footer style="text-align: center; margin-top: 80px; padding-bottom: 20px; color: #4f5b93; font-size: 0.9rem;">
+            SYSTEM OF HUO_JIAN_JIE © 2026 // END_OF_FILE
+        </footer>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-
-            /* ---------------------------------------------------
-               1. OOP: 动态粒子网络背景 (Canvas Particle Network)
-               --------------------------------------------------- */
-            class ParticleNetwork {
-                constructor(canvasId) {
-                    this.canvas = document.getElementById(canvasId);
-                    this.ctx = this.canvas.getContext('2d');
-                    this.particles = [];
-                    this.mouse = { x: null, y: null };
-                    
-                    this.init();
-                    this.animate();
-
-                    window.addEventListener('resize', () => this.resize());
-                    window.addEventListener('mousemove', (e) => {
-                        this.mouse.x = e.x;
-                        this.mouse.y = e.y;
-                    });
-                }
-
-                resize() {
-                    this.canvas.width = window.innerWidth;
-                    this.canvas.height = window.innerHeight;
-                    this.createParticles();
-                }
-
-                init() {
-                    this.resize();
-                }
-
-                createParticles() {
-                    this.particles = [];
-                    const particleCount = Math.floor((this.canvas.width * this.canvas.height) / 15000);
-                    for (let i = 0; i < particleCount; i++) {
-                        this.particles.push({
-                            x: Math.random() * this.canvas.width,
-                            y: Math.random() * this.canvas.height,
-                            vx: (Math.random() - 0.5) * 1,
-                            vy: (Math.random() - 0.5) * 1,
-                            size: Math.random() * 2 + 1
-                        });
-                    }
-                }
-
-                animate() {
-                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                    
-                    for (let i = 0; i < this.particles.length; i++) {
-                        let p = this.particles[i];
-                        
-                        // 移动
-                        p.x += p.vx;
-                        p.y += p.vy;
-
-                        // 边界反弹
-                        if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1;
-                        if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1;
-
-                        // 绘制粒子
-                        this.ctx.beginPath();
-                        this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                        this.ctx.fillStyle = 'rgba(0, 255, 255, 0.5)';
-                        this.ctx.fill();
-
-                        // 粒子间连线
-                        for (let j = i; j < this.particles.length; j++) {
-                            let p2 = this.particles[j];
-                            let dx = p.x - p2.x;
-                            let dy = p.y - p2.y;
-                            let distance = Math.sqrt(dx * dx + dy * dy);
-
-                            if (distance < 120) {
-                                this.ctx.beginPath();
-                                this.ctx.strokeStyle = `rgba(0, 255, 255, ${0.2 - distance/600})`;
-                                this.ctx.lineWidth = 1;
-                                this.ctx.moveTo(p.x, p.y);
-                                this.ctx.lineTo(p2.x, p2.y);
-                                this.ctx.stroke();
-                            }
-                        }
-
-                        // 鼠标交互推开粒子
-                        if (this.mouse.x != null) {
-                            let dxMouse = p.x - this.mouse.x;
-                            let dyMouse = p.y - this.mouse.y;
-                            let distMouse = Math.sqrt(dxMouse*dxMouse + dyMouse*dyMouse);
-                            if (distMouse < 150) {
-                                p.x += dxMouse * 0.02;
-                                p.y += dyMouse * 0.02;
-                            }
-                        }
-                    }
-                    requestAnimationFrame(() => this.animate());
-                }
-            }
-            new ParticleNetwork('canvas-bg');
-
-            /* ---------------------------------------------------
-               2. 异步逻辑: 终端打字机特效 (Terminal Emulator)
-               --------------------------------------------------- */
-            class TerminalEmulator {
-                constructor(containerId) {
-                    this.container = document.getElementById(containerId);
-                    this.sequence = [
-                        { text: "Connecting to secure server...", type: 'system', delay: 800 },
-                        { text: "Authentication OK. Loading profile data...", type: 'system', delay: 600 },
-                        { text: "cat about_huojianjie.md", type: 'command', delay: 400 },
-                        { text: "你好，我是来自计算机学院软件工程专业的 霍建杰。\n我热衷于探索代码的边界，无论是穿梭于 Linux 服务器的底层命令行，还是利用现代框架构建高可用服务，我都乐在其中。\n保持极客精神，用代码重构世界。期待在技术的道路上不断前行，结交志同道合的伙伴。", type: 'response', delay: 1000 },
-                        { text: "./execute_skills.sh", type: 'command', delay: 500 }
-                    ];
-                    this.run();
-                }
-
-                sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
-
-                async typeText(element, text, speed = 30) {
-                    for (let char of text) {
-                        if (char === '\n') {
-                            element.innerHTML += '<br><br>';
-                        } else {
-                            element.innerHTML += char;
-                        }
-                        await this.sleep(speed + Math.random() * 20); // 模拟人类打字停顿
-                    }
-                }
-
-                async run() {
-                    this.container.innerHTML = '';
-                    
-                    for (let step of this.sequence) {
-                        await this.sleep(step.delay);
-                        
-                        const line = document.createElement('div');
-                        line.style.marginBottom = '10px';
-                        
-                        if (step.type === 'system') {
-                            line.style.color = '#8892b0';
-                            line.innerHTML = `[SYS] ${step.text}`;
-                            this.container.appendChild(line);
-                        } else if (step.type === 'command') {
-                            line.innerHTML = `<span class="prompt">root@sys-core:~$</span> <span class="command"></span>`;
-                            this.container.appendChild(line);
-                            const cmdSpan = line.querySelector('.command');
-                            await this.typeText(cmdSpan, step.text, 50);
-                        } else if (step.type === 'response') {
-                            line.style.borderLeft = '2px solid #333';
-                            line.style.paddingLeft = '15px';
-                            line.style.color = '#c7d2fe';
-                            this.container.appendChild(line);
-                            await this.typeText(line, step.text, 15);
-                        }
-                    }
-                    
-                    // 添加最终闪烁的游标
-                    const cursorLine = document.createElement('div');
-                    cursorLine.innerHTML = `<span class="prompt">root@sys-core:~$</span> <span class="cursor"></span>`;
-                    this.container.appendChild(cursorLine);
-                }
-            }
-            new TerminalEmulator('terminal-content');
-
-            /* ---------------------------------------------------
-               3. 3D 数学计算: 卡片悬浮倾斜 (3D Tilt Effect)
-               --------------------------------------------------- */
-            const cards = document.querySelectorAll('.cyber-card');
-            cards.forEach(card => {
-                card.addEventListener('mousemove', e => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left; // 鼠标在卡片内的 X 坐标
-                    const y = e.clientY - rect.top;  // 鼠标在卡片内的 Y 坐标
-                    
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    
-                    // 计算倾斜角度 (系数可调)
-                    const rotateX = ((y - centerY) / centerY) * -10; 
-                    const rotateY = ((x - centerX) / centerX) * 10;
-                    
-                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-                });
-
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-                });
-            });
-
-            /* ---------------------------------------------------
-               4. 现代 API: 滚动监听动画 (Intersection Observer)
-               --------------------------------------------------- */
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: "0px 0px -50px 0px"
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                        observer.unobserve(entry.target); // 触发一次后取消监听提升性能
-                    }
-                });
-            }, observerOptions);
-
-            document.querySelectorAll('.reveal').forEach(el => {
-                observer.observe(el);
-            });
-        });
-    </script>
+    <script src="./js/script.js"></script>
 </body>
 </html>
