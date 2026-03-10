@@ -3,157 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SYSTEM_ROOT // 个人终端 - 霍建杰</title>
+    <title>SYS.ROOT // 霍建杰_研发终端</title>
     <link rel="stylesheet" href="./css/style.css">
 </head>
-<body>
+<body class="loading">
 
-    <canvas id="canvas-bg"></canvas>
-    <div class="scanlines"></div>
-
-    <div class="container">
-        <header class="reveal">
-            <div class="name-glitch" data-text="霍建杰">霍建杰</div>
-            <div class="college">SYS.LOC <span>//</span> 计算机学院-软件工程 <span>//</span> 寻找实习机会</div>
-        </header>
-
-        <section class="reveal">
-            <h2 class="section-title" style="margin-top: 0;">USER_PROFILE.exe</h2>
-            <div class="terminal-box">
-                <div class="terminal-header">
-                    <div class="terminal-buttons">
-                        <span class="btn-close"></span>
-                        <span class="btn-min"></span>
-                        <span class="btn-max"></span>
-                    </div>
-                    <div class="terminal-title">root@sys-core:~</div>
-                </div>
-                <div class="terminal-body" id="terminal-content"></div>
-            </div>
-        </section>
-
-        <section class="reveal">
-            <h2 class="section-title">CORE_MODULES // 核心优势与技术栈</h2>
-            <div class="advantages-vertical">
-                
-                <div class="cyber-row-card reveal-item">
-                    <div class="card-id">SYS.01</div>
-                    <div class="card-content">
-                        <h3 class="card-title"><span>#</span> 核心编程与后端架构</h3>
-                        <p class="card-desc">具备扎实的编程内功，精通 <strong>Python</strong> 与 C++。能够熟练运用现代框架构建高吞吐量的 RESTful API 与 Web 服务。注重代码规范与设计模式，能在复杂的业务逻辑中设计出低耦合、高内聚的系统架构。</p>
-                        <div class="tech-tags">
-                            <span class="tech-tag">Python 3</span>
-                            <span class="tech-tag">C++14</span>
-                            <span class="tech-tag">RESTful API</span>
-                            <span class="tech-tag">System Design</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="cyber-row-card reveal-item">
-                    <div class="card-id">AI.02</div>
-                    <div class="card-content">
-                        <h3 class="card-title"><span>#</span> 机器学习与工程落地</h3>
-                        <p class="card-desc">对 AI 应用落地有浓厚兴趣与实践经验。主导开发了基于 <strong>PaddleOCR 3.4</strong> 的高精度文档解析系统，解决了复杂版面识别与结构化数据提取的痛点。能够将前沿的机器学习算法有效集成到现有的软件工程链路中。</p>
-                        <div class="tech-tags">
-                            <span class="tech-tag">Machine Learning</span>
-                            <span class="tech-tag">PaddleOCR 3.4</span>
-                            <span class="tech-tag">Data Parsing</span>
-                            <span class="tech-tag">Algorithm Integration</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="cyber-row-card reveal-item">
-                    <div class="card-id">ENV.03</div>
-                    <div class="card-content">
-                        <h3 class="card-title"><span>#</span> Linux 生态与运维部署</h3>
-                        <p class="card-desc">重度 Linux 极客用户，长期将 <strong>Ubuntu 22.04</strong> 作为绝对的日常主力开发环境。精通 Shell 自动化脚本编写、系统权限管控及网络环境配置。熟练使用 Docker 等容器化技术，具备独立完成从代码到服务器部署的全流程能力。</p>
-                        <div class="tech-tags">
-                            <span class="tech-tag">Ubuntu 22.04</span>
-                            <span class="tech-tag">Shell Script</span>
-                            <span class="tech-tag">Docker</span>
-                            <span class="tech-tag">CI/CD</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <section class="reveal">
-            <h2 class="section-title">EXP_LOGS // 经历与项目</h2>
-            <div class="timeline">
-                
-                <div class="timeline-item reveal-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-date">2026.01 - 至今</div>
-                    <div class="timeline-content cyber-panel">
-                        <h3>独立全栈项目 <span>//</span> 娱乐节目(DWTS)综合分析平台</h3>
-                        <p>针对大型互动电视节目(Dancing with the Stars)开发的数据分析与展示系统。通过爬虫技术采集多维度互动数据，使用 Python 进行数据清洗与特征提取，并构建了可视化的前端面板，展现了优秀的独立数据处理与工程构建能力。</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item reveal-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-date">2024.09 - 2025.06</div>
-                    <div class="timeline-content cyber-panel">
-                        <h3>自强创业班 <span>//</span> 核心技术成员</h3>
-                        <p>在自强创业班期间，负责多个初创项目的基础技术架构选型与 Demo 搭建。热衷于在 GitHub 深度挖掘开源项目，通过 Vibe Coding 的方式快速将产品 Idea 落地，积累了丰富的敏捷开发与团队协作经验。</p>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <section class="reveal">
-            <h2 class="section-title">ACHIEVEMENTS // 荣誉与奖项</h2>
-            <div class="awards-grid">
-                <div class="award-card reveal-item">
-                    <div class="award-icon">🏆</div>
-                    <h4>国家级或省级专业竞赛 奖项</h4>
-                    <p>2025年度 // 展现出色的算法与工程能力</p>
-                </div>
-                <div class="award-card reveal-item">
-                    <div class="award-icon">🥇</div>
-                    <h4>校级一等奖学金</h4>
-                    <p>2024-2025学年 // 保持专业排名前列</p>
-                </div>
-                <div class="award-card reveal-item">
-                    <div class="award-icon">💻</div>
-                    <h4>优秀开源贡献者</h4>
-                    <p>参与多个开源项目的 Issues 与 PR 修复</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="reveal resume-section">
-            <div class="resume-box">
-                <div class="resume-info">
-                    <h3>READY_FOR_INTERNSHIP // 期待加入您的团队</h3>
-                    <p>如果您正在寻找一位对技术充满热情、具备极客精神且拥有扎实工程能力的实习生，欢迎查阅我的完整简历。我随时准备好迎接新的技术挑战。</p>
-                </div>
-                <a href="./assets/霍建杰_简历.pdf" download="霍建杰_前端后端_实习简历.pdf" class="download-btn">
-                    <span class="btn-icon">📥</span> [ 提取完整简历.PDF ]
-                </a>
-            </div>
-        </section>
-
-        <section class="reveal" id="contact">
-            <h2 class="section-title">NETWORK_LINKS // 通信协议链接</h2>
-            <div class="social-container">
-                <a href="https://github.com/H-wonder" target="_blank" class="social-btn">[ GITHUB_REPO ]</a>
-                <a href="mailto:2825191095@qq.com" class="social-btn">[ INIT_EMAIL ]</a>
-                <a href="#" target="_blank" class="social-btn">[ LEETCODE_ID ]</a>
-                <a href="#" target="_blank" class="social-btn">[ TECH_BLOG ]</a>
-            </div>
-        </section>
-        
-        <footer style="text-align: center; margin-top: 80px; padding-bottom: 20px; color: #4f5b93; font-size: 0.9rem;">
-            SYSTEM OF HUO_JIAN_JIE © 2026 // END_OF_FILE
-        </footer>
+    <div id="boot-loader">
+        <div class="loader-ring"></div>
+        <div class="boot-text" id="boot-text">INITIALIZING KERNEL...</div>
     </div>
 
-    <script src="./js/script.js"></script>
+    <canvas id="nexus-canvas"></canvas>
+    
+    <div class="crt-overlay"></div>
+    <div class="noise-overlay"></div>
+
+    <div id="cyber-cursor" class="cyber-cursor">
+        <div class="cursor-center"></div>
+        <svg class="cursor-ring" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45"></circle>
+        </svg>
+    </div>
+
+    <nav class="hud-nav">
+        <div class="hud-left">
+            <span class="sys-status blinking">REC</span>
+            <span class="sys-id">USER_ID: HUO_J.J // SYS: UBUNTU_22.04</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#core" class="glitch-hover" data-text="CORE_PROFILE">CORE_PROFILE</a></li>
+            <li><a href="#projects" class="glitch-hover" data-text="PROJECTS">PROJECTS</a></li>
+            <li><a href="#honors" class="glitch-hover" data-text="HONORS">HONORS</a></li>
+        </ul>
+        <div class="hud-right" id="sys-time">00:00:00</div>
+    </nav>
+
+    <main class="container">
+        
+        <section id="core" class="hero-section">
+            <div class="hero-content">
+                <div class="auth-box reveal">
+                    <span class="auth-label">IDENTITY VERIFIED</span>
+                    <h1 class="hero-glitch" data-text="霍建杰">霍建杰</h1>
+                    <h2 class="sub-title typewriter-target"></h2>
+                    <p class="hero-desc">
+                        来自武汉大学计算机学院软件工程专业。作为重度 Linux 用户，我习惯于穿梭在底层的命令行中，追求代码的极致性能与架构的优雅。
+                        我不仅热衷于构建高并发的后端链路，更致力于将前沿的 AI 模型（如大语言模型与多模态解析）深度融入工程实践，用技术重构数据价值。
+                    </p>
+                    <div class="action-group">
+                        <a href="#projects" class="cyber-btn primary-btn">
+                            <span class="btn-text">INITIATE_PROJECTS</span>
+                            <span class="btn-scan"></span>
+                        </a>
+                        <a href="./assets/霍建杰_简历.pdf" download="霍建杰_研发简历.pdf" class="cyber-btn secondary-btn">
+                            <span class="btn-text">EXTRACT_DATA.pdf</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="radar-container reveal delay-1">
+                    <canvas id="skill-radar" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="project-section">
+            <div class="section-header reveal">
+                <h2 class="cyber-heading">EXECUTION_LOGS // <span>工程落地</span></h2>
+                <div class="heading-line"></div>
+            </div>
+
+            <div class="project-grid">
+                
+                <article class="project-card reveal">
+                    <div class="card-border"></div>
+                    <div class="card-content">
+                        <div class="card-meta">
+                            <span class="tech-id">AI-SYS.01</span>
+                            <span class="year">2026</span>
+                        </div>
+                        <h3>知识图谱与 GraphRAG 问答系统</h3>
+                        <p class="desc">
+                            针对传统 LLM 存在知识幻觉与垂直领域信息匮乏的问题，主导构建的深度检索系统。
+                            通过深度解析非结构化文本，自动提取实体与拓扑关系并写入图数据库。结合 RAG（检索增强生成）与图谱推理技术，
+                            实现了对复杂垂直领域知识的精准、可溯源问答，大幅提升了系统的知识准确度。
+                        </p>
+                        <ul class="tech-stack">
+                            <li>Python</li><li>LLM/GraphRAG</li><li>Knowledge Graph</li><li>Neo4j</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <article class="project-card reveal delay-1">
+                    <div class="card-border"></div>
+                    <div class="card-content">
+                        <div class="card-meta">
+                            <span class="tech-id">DATA-SYS.02</span>
+                            <span class="year">2026.02</span>
+                        </div>
+                        <h3>多模态文档解析与结构化系统</h3>
+                        <p class="desc">
+                            为打破非结构化文档（PDF/图像）的数据孤岛，基于 PaddleOCR 进行底层二次开发。
+                            深入优化复杂版面的识别与版面还原算法。系统构建了极其严格的后置校验链路，确保最终输出的 JSON 格式高度标准化，
+                            彻底杜绝下游链路的报错阻断，实现了高并发场景下的高可用。
+                        </p>
+                        <ul class="tech-stack">
+                            <li>PaddleOCR</li><li>Python</li><li>JSON Serialization</li><li>Error Handling</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <article class="project-card reveal delay-2">
+                    <div class="card-border"></div>
+                    <div class="card-content">
+                        <div class="card-meta">
+                            <span class="tech-id">WEB-SYS.03</span>
+                            <span class="year">2026.01</span>
+                        </div>
+                        <h3>DWTS 互动数据全链路分析平台</h3>
+                        <p class="desc">
+                            针对大型互动电视节目独立打造的综合数据系统。从底层的分布式高并发爬虫采集，到中层的数据清洗与特征提取，
+                            再到前端的可视化大屏动态渲染。该项目证明了我在全栈视角下的系统架构能力与对海量数据的敏感度。
+                        </p>
+                        <ul class="tech-stack">
+                            <li>Spider</li><li>Data Analysis</li><li>Visualization</li><li>Full-Stack</li>
+                        </ul>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <section id="honors" class="honor-section">
+            <div class="section-header reveal">
+                <h2 class="cyber-heading">ACHIEVEMENTS // <span>履历与荣誉</span></h2>
+                <div class="heading-line"></div>
+            </div>
+
+            <div class="honor-layout">
+                <div class="honor-list reveal">
+                    <div class="honor-item">
+                        <div class="honor-icon"></div>
+                        <div class="honor-details">
+                            <h4>国家励志奖学金</h4>
+                            <p>National Encouragement Scholarship // 顶尖学业认可</p>
+                        </div>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-icon"></div>
+                        <div class="honor-details">
+                            <h4>武汉大学优秀学生奖学金</h4>
+                            <p>Wuhan University Outstanding Student // 综合素质标兵</p>
+                        </div>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-icon"></div>
+                        <div class="honor-details">
+                            <h4>武汉大学优秀共青团员</h4>
+                            <p>Outstanding Youth League Member // 思想与实践先锋</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="honor-card-3d js-tilt reveal delay-1">
+                    <div class="card-glare"></div>
+                    <div class="inner-content">
+                        <span class="watermark">WHU</span>
+                        <h3> 核心技术骨干</h3>
+                        <div class="divider"></div>
+                        <p>
+                            在团队中承担多个初创产品的基础架构选型与 Demo 研发重任。
+                            善于整合 GitHub 开源生态，运用现代化的 Vibe Coding 模式，敏捷地将商业 Idea 转化为健壮的代码产品。
+                            不仅具备扎实的单兵作战能力，更积累了丰富的团队敏捷开发与协同经验。
+                        </p>
+                        <div class="hologram-effect"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="cyber-footer reveal">
+            <div class="footer-content">
+                <h2>AWAITING_CONNECTION...</h2>
+                <p>期望以代码为桥梁，在真实的业务战场上创造价值。</p>
+                <div class="social-links">
+                    <a href="https://github.com/H-wonder" target="_blank" data-text="GITHUB">GITHUB</a>
+                    <a href="#" id="email-trigger" data-text="EMAIL">EMAIL</a>
+                    <a href="./assets/霍建杰_简历.pdf" download data-text="DOWNLOAD_RESUME">DOWNLOAD_RESUME</a>
+                </div>
+                <div class="copyright">SYS.DEV: HUO_JIAN_JIE // 2026 // END_OF_TRANSMISSION</div>
+            </div>
+        </footer>
+
+    </main>
+<div id="cyber-toast" class="cyber-toast">
+        <span class="toast-icon">!</span>
+        <span class="toast-msg">SYS.MSG: AWAITING...</span>
+    </div>
+    <script src="./js/nexus.js"></script>
 </body>
 </html>
