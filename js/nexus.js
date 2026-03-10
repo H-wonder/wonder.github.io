@@ -3,13 +3,26 @@
  * Includes Particle Nexus, 3D Radar, Boot Sequence, and Interactive DOM mapping.
  */
 document.addEventListener('DOMContentLoaded', () => {
+
+    // --- 4. SCROLL REVEAL OBSERVER (优化了触发阈值) ---
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
     
-    // --- 1. SYSTEM BOOT SEQUENCE ---
+    // --- 1. SYSTEM BOOT SEQUENCE (修复了动画提前加载的问题) ---
     setTimeout(() => {
         document.body.classList.remove('loading');
         document.body.classList.add('loaded');
         initTypewriter();
-    }, 2000); // 模拟系统开机耗时
+        
+        // 等待遮罩消失后，再绑定滚动显现，确保首屏动画正常滑出
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    }, 2000);
 
     // --- 2. HUD TIME SYNCHRONIZATION ---
     function updateSysTime() {
@@ -30,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function renderCursor() {
-        // 使用插值实现平滑跟随
         cursorX += (mouseX - cursorX) * 0.2;
         cursorY += (mouseY - cursorY) * 0.2;
         cursor.style.left = `${cursorX}px`;
@@ -38,18 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(renderCursor);
     }
     renderCursor();
-
-    // --- 4. SCROLL REVEAL OBSERVER ---
-    const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-                revealObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.15, rootMargin: "0px 0px -100px 0px" });
-    
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
     // --- 5. TYPEWRITER EFFECT (HERO SECTION) ---
     const roles = ["BACKEND_ARCHITECT", "AI_MODEL_INTEGRATOR", "LINUX_GEEK", "KNOWLEDGE_GRAPH_ENG"];
@@ -112,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         init() {
             this.particles = [];
-            // 根据屏幕大小决定节点数量，模拟庞大的知识图谱
             const count = Math.floor((this.canvas.width * this.canvas.height) / 12000);
             for (let i = 0; i < count; i++) {
                 this.particles.push({
@@ -121,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     vx: (Math.random() - 0.5) * 0.5,
                     vy: (Math.random() - 0.5) * 0.5,
                     size: Math.random() * 2 + 1,
-                    isCore: Math.random() > 0.95 // 少数核心实体节点
+                    isCore: Math.random() > 0.95
                 });
             }
         }
@@ -133,17 +132,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 let p = this.particles[i];
                 p.x += p.vx; p.y += p.vy;
 
-                // 边界反弹
                 if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1;
                 if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1;
 
-                // 绘制图谱实体节点
                 this.ctx.beginPath();
                 this.ctx.arc(p.x, p.y, p.isCore ? p.size * 2 : p.size, 0, Math.PI * 2);
                 this.ctx.fillStyle = p.isCore ? '#ff00ea' : '#00f3ff';
                 this.ctx.fill();
 
-                // 绘制图谱关系连线 (Graph Edges)
                 for (let j = i + 1; j < this.particles.length; j++) {
                     let p2 = this.particles[j];
                     let dx = p.x - p2.x, dy = p.y - p2.y;
@@ -159,12 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
 
-                // 鼠标交互：推开节点 (知识查询扰动模拟)
                 let dxM = p.x - mouseX, dyM = p.y - mouseY;
                 let distM = Math.sqrt(dxM*dxM + dyM*dyM);
                 if (distM < 150) {
                     p.x += dxM * 0.02; p.y += dyM * 0.02;
-                    // 高亮靠近鼠标的节点和连线
                     this.ctx.beginPath();
                     this.ctx.strokeStyle = `rgba(255, 0, 234, ${0.5 - distM/300})`;
                     this.ctx.moveTo(p.x, p.y);
@@ -183,7 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const ctx = canvas.getContext('2d');
         const cx = 200, cy = 200, radius = 130;
         
-        // 核心技术栈分值数据
         const data = [
             { label: 'Python/C++', val: 95 },
             { label: 'GraphRAG/Neo4j', val: 88 },
@@ -194,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
         const sides = data.length;
         const angleStep = (Math.PI * 2) / sides;
-        let rotation = 0; // 雷达整体缓慢旋转角度
+        let rotation = 0; 
 
         function getPoint(r, angle) {
             return { x: cx + r * Math.sin(angle), y: cy - r * Math.cos(angle) };
@@ -202,9 +195,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function render() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            rotation += 0.002; // 缓慢自转
+            rotation += 0.002; 
 
-            // 绘制底图蛛网
             ctx.lineWidth = 1;
             for (let level = 1; level <= 5; level++) {
                 let r = (radius / 5) * level;
@@ -218,7 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.stroke();
             }
 
-            // 绘制坐标轴线和标签文字
             ctx.font = '14px Rajdhani';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -232,13 +223,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.strokeStyle = 'rgba(0, 243, 255, 0.2)';
                 ctx.stroke();
                 
-                // 计算文字位置并处理倾斜抵消
                 let pText = getPoint(radius + 25, angle);
                 ctx.fillStyle = '#e0f2fe';
                 ctx.fillText(data[i].label, pText.x, pText.y);
             }
 
-            // 绘制用户数据多边形面
             ctx.beginPath();
             for (let i = 0; i < sides; i++) {
                 let r = (data[i].val / 100) * radius;
@@ -247,14 +236,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             ctx.closePath();
             
-            // 内部粉色荧光填充
             ctx.fillStyle = 'rgba(255, 0, 234, 0.3)';
             ctx.fill();
             ctx.strokeStyle = '#ff00ea';
             ctx.lineWidth = 2;
             ctx.stroke();
             
-            // 绘制数据发光顶点
             ctx.fillStyle = '#00f3ff';
             for (let i = 0; i < sides; i++) {
                 let r = (data[i].val / 100) * radius;
@@ -265,7 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
             requestAnimationFrame(render);
         }
         
-        // 只有雷达模块滚动到可视区域时才开始渲染，优化性能
         const radarObserver = new IntersectionObserver((entries) => {
             if(entries[0].isIntersecting) {
                 render();
@@ -276,6 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     drawSkillRadar();
+
     // --- 9. DATA EXTRACTION: EMAIL REVEAL & COPY LOGIC ---
     const emailTrigger = document.getElementById('email-trigger');
     const cyberToast = document.getElementById('cyber-toast');
@@ -284,28 +271,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const toastMsg = cyberToast.querySelector('.toast-msg');
         
         emailTrigger.addEventListener('click', (e) => {
-            e.preventDefault(); // 阻止默认的点击跳转行为
+            e.preventDefault(); 
             
             const myEmail = '2825191095@qq.com';
             const upperEmail = myEmail.toUpperCase();
             
-            // 1. 触发解密视觉特效 (文字替换并加上粉色高亮类)
             emailTrigger.innerText = upperEmail;
             emailTrigger.setAttribute('data-text', upperEmail);
             emailTrigger.classList.add('email-revealed');
             
-            // 2. 调用原生剪贴板 API 将邮箱写入访客剪贴板
             navigator.clipboard.writeText(myEmail).then(() => {
-                // 3. 触发 HUD 通知弹窗
                 toastMsg.innerText = `SYS.MSG: [ ${upperEmail} ] COPIED TO CLIPBOARD`;
                 cyberToast.classList.add('show');
                 
-                // 3.5 秒后自动收回通知弹窗
                 setTimeout(() => {
                     cyberToast.classList.remove('show');
                 }, 3500);
             }).catch(err => {
-                // 降级处理：如果浏览器不支持剪贴板 API
                 toastMsg.innerText = `SYS.MSG: DATA DECRYPTED. PLEASE COPY MANUALLY.`;
                 toastMsg.style.color = '#ff00ea';
                 cyberToast.classList.add('show');

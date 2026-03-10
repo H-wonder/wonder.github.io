@@ -90,13 +90,14 @@ a:hover ~ .cyber-cursor .cursor-ring, button:hover ~ .cyber-cursor .cursor-ring 
 @keyframes scanline { 0% { left: 0; } 100% { left: calc(100% - 200px); } }
 
 /* =========================================
-   布局与显现引擎
+   布局与显现引擎 (修复了移动端掉帧与模糊)
    ========================================= */
 .container { max-width: 1400px; margin: 0 auto; padding: 100px 5vw; }
 section { padding: 100px 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
 
-.reveal { opacity: 0; transform: translateY(50px); filter: blur(10px); transition: all 1.2s cubic-bezier(0.1, 0.7, 0.1, 1); }
-.reveal.active { opacity: 1; transform: translateY(0); filter: blur(0); }
+/* 去除了 filter:blur 保证动画丝滑 */
+.reveal { opacity: 0; transform: translateY(50px); transition: all 1s cubic-bezier(0.1, 0.7, 0.1, 1); }
+.reveal.active { opacity: 1; transform: translateY(0); }
 .delay-1 { transition-delay: 0.2s; }
 .delay-2 { transition-delay: 0.4s; }
 
@@ -168,7 +169,7 @@ section { padding: 100px 0; min-height: 100vh; display: flex; flex-direction: co
 /* 右侧 3D 浮雕卡片 */
 .honor-card-3d { position: relative; background: rgba(6, 11, 25, 0.8); border: 1px solid var(--grid-color); border-radius: 10px; padding: 50px; transform-style: preserve-3d; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
 .card-glare { position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15), transparent 60%); opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 10; }
-.inner-content { transform: translateZ(40px); /* 3D 浮出效果 */ }
+.inner-content { transform: translateZ(40px); }
 .watermark { position: absolute; top: 10px; right: 20px; font-size: 6rem; font-weight: 900; color: rgba(255,255,255,0.03); z-index: -1; font-family: 'Rajdhani', sans-serif; }
 .honor-card-3d h3 { font-size: 1.8rem; color: var(--cyan); margin-bottom: 20px; }
 .divider { width: 50px; height: 2px; background: var(--pink); margin-bottom: 25px; }
@@ -189,19 +190,12 @@ section { padding: 100px 0; min-height: 100vh; display: flex; flex-direction: co
 .social-links a:hover::after { right: 0; opacity: 1; }
 .copyright { font-size: 0.8rem; color: var(--text-dim); font-family: 'Rajdhani', sans-serif; }
 
-/* Glitch Animation Keyframes */
 @keyframes glitch-anim {
     0% { clip: rect(44px, 9999px, 86px, 0); } 20% { clip: rect(98px, 9999px, 16px, 0); }
     40% { clip: rect(69px, 9999px, 47px, 0); } 60% { clip: rect(23px, 9999px, 11px, 0); }
     80% { clip: rect(80px, 9999px, 5px, 0); } 100% { clip: rect(12px, 9999px, 59px, 0); }
 }
 
-@media (max-width: 1024px) {
-    .hero-content { flex-direction: column; text-align: center; }
-    .hero-desc { border-left: none; padding-left: 0; }
-    .action-group { justify-content: center; }
-    .honor-layout { grid-template-columns: 1fr; }
-}
 /* =========================================
    HUD Toast 屏幕通知系统 & 邮箱解密状态
    ========================================= */
@@ -223,9 +217,63 @@ section { padding: 100px 0; min-height: 100vh; display: flex; flex-direction: co
 }
 .toast-msg { color: var(--cyan); letter-spacing: 1px; font-weight: bold; }
 
-/* 邮箱解密后的高亮状态 */
 .email-revealed {
     color: var(--pink) !important;
     text-shadow: 0 0 15px var(--pink) !important;
     border-color: var(--pink) !important;
+}
+
+/* =========================================
+   移动端响应式适配 (Mobile Responsiveness)
+   ========================================= */
+@media screen and (max-width: 768px) {
+    .container { padding: 80px 20px 40px; }
+    section { min-height: auto; padding: 60px 0; }
+    
+    .hud-nav { 
+        height: auto; padding: 15px; flex-direction: column; gap: 15px; 
+        background: rgba(2, 2, 4, 0.95); backdrop-filter: blur(10px);
+    }
+    .hud-left { display: flex; flex-direction: column; align-items: center; gap: 5px;}
+    .sys-id { font-size: 0.75rem; text-align: center; }
+    .nav-links { width: 100%; justify-content: center; gap: 15px; flex-wrap: wrap; }
+    .nav-links a { font-size: 0.85rem; }
+    #sys-time { display: none; }
+
+    .hero-content { flex-direction: column; text-align: center; gap: 30px; }
+    .hero-glitch { font-size: 3rem; }
+    .sub-title { font-size: 1.2rem; height: auto; min-height: 30px; margin-bottom: 20px; }
+    .hero-desc { border-left: none; padding-left: 0; text-align: left; font-size: 0.95rem; }
+    
+    .action-group { flex-direction: column; width: 100%; }
+    .cyber-btn { width: 100%; padding: 12px 20px; font-size: 1rem; }
+
+    .radar-container { width: 100%; overflow: hidden; }
+    #skill-radar { width: 100%; height: auto; max-width: 320px; }
+
+    .cyber-heading { font-size: 2rem; letter-spacing: 2px; }
+    .heading-line { margin-bottom: 30px; }
+
+    .project-grid { grid-template-columns: 1fr; gap: 30px; }
+    .project-card { padding: 25px; }
+    .project-card h3 { font-size: 1.3rem; }
+    
+    .honor-layout { grid-template-columns: 1fr; gap: 40px; }
+    .honor-card-3d { padding: 30px 20px; }
+    .watermark { font-size: 4rem; top: 50%; transform: translateY(-50%); }
+
+    .social-links { flex-direction: column; gap: 15px; align-items: center; }
+    .social-links a { width: 100%; max-width: 250px; text-align: center; border: 1px solid var(--grid-color); }
+    
+    .cyber-toast { width: 90%; padding: 12px 20px; font-size: 0.8rem; }
+}
+
+/* =========================================
+   触屏设备交互降级 (Touch Device Optimization)
+   ========================================= */
+@media (hover: none) and (pointer: coarse) {
+    * { cursor: auto !important; }
+    .cyber-cursor { display: none !important; }
+    .honor-card-3d { transform: none !important; }
+    .card-glare { display: none !important; }
 }
