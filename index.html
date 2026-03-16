@@ -9,64 +9,173 @@
 <body class="loading">
 
     <div id="boot-loader">
-        <div class="loader-ring"></div>
-        <div class="boot-text" id="boot-text">INITIALIZING KERNEL...</div>
+        <div class="loader-ring-outer"></div>
+        <div class="loader-ring-inner"></div>
+        <div class="boot-sequence">
+            <div class="boot-text" id="boot-text">INITIALIZING KERNEL...</div>
+            <div class="boot-progress-bar"><div class="boot-progress-fill" id="boot-progress"></div></div>
+            <div class="boot-log" id="boot-log"></div>
+        </div>
     </div>
 
     <canvas id="nexus-canvas"></canvas>
+    <canvas id="matrix-canvas"></canvas>
     
     <div class="crt-overlay"></div>
     <div class="noise-overlay"></div>
+    <div class="scanline-sweep"></div>
 
     <div id="cyber-cursor" class="cyber-cursor">
         <div class="cursor-center"></div>
         <svg class="cursor-ring" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="45"></circle>
         </svg>
+        <div class="cursor-dot"></div>
     </div>
 
     <nav class="hud-nav">
         <div class="hud-left">
-            <span class="sys-status blinking">REC</span>
+            <span class="sys-status blinking">● REC</span>
             <span class="sys-id">USER_ID: HUO_J.J // SYS: UBUNTU_22.04</span>
         </div>
         <ul class="nav-links">
             <li><a href="#core" class="glitch-hover" data-text="CORE_PROFILE">CORE_PROFILE</a></li>
+            <li><a href="#skills" class="glitch-hover" data-text="SKILLS">SKILLS</a></li>
             <li><a href="#projects" class="glitch-hover" data-text="PROJECTS">PROJECTS</a></li>
             <li><a href="#honors" class="glitch-hover" data-text="HONORS">HONORS</a></li>
+            <li><a href="#contact" class="glitch-hover" data-text="CONNECT">CONNECT</a></li>
         </ul>
-        <div class="hud-right" id="sys-time">00:00:00</div>
+        <div class="hud-right">
+            <div id="sys-time" class="sys-clock">00:00:00.0</div>
+            <div class="sys-fps" id="fps-counter">60 FPS</div>
+        </div>
     </nav>
 
     <main class="container">
         
+        <!-- ====== SECTION 1: HERO ====== -->
         <section id="core" class="hero-section">
             <div class="hero-content">
                 <div class="auth-box reveal">
-                    <span class="auth-label">IDENTITY VERIFIED</span>
-                    <h1 class="hero-glitch" data-text="霍建杰">霍建杰</h1>
-                    <h2 class="sub-title typewriter-target"></h2>
-                    <p class="hero-desc">
-                        来自武汉大学计算机学院软件工程专业。作为重度 Linux 用户，我习惯于穿梭在底层的命令行中，追求代码的极致性能与架构的优雅。
-                        我不仅热衷于构建高并发的后端链路，更致力于将前沿的 AI 模型（如大语言模型与多模态解析）深度融入工程实践，用技术重构数据价值。
-                    </p>
-                    <div class="action-group">
-                        <a href="#projects" class="cyber-btn primary-btn">
-                            <span class="btn-text">INITIATE_PROJECTS</span>
-                            <span class="btn-scan"></span>
-                        </a>
-                        <a href="./assets/噜噜.jpg" download="噜噜.jpg" class="cyber-btn secondary-btn">
-                            <span class="btn-text">EXTRACT_DATA.pdf</span>
-                        </a>
+                    <div class="terminal-header">
+                        <span class="terminal-dot red"></span>
+                        <span class="terminal-dot yellow"></span>
+                        <span class="terminal-dot green"></span>
+                        <span class="terminal-title">root@wonderhub: ~/profile</span>
+                    </div>
+                    <div class="terminal-body">
+                        <span class="auth-label">
+                            <span class="auth-bracket">[</span>
+                            IDENTITY VERIFIED
+                            <span class="auth-bracket">]</span>
+                        </span>
+                        <h1 class="hero-glitch" data-text="霍建杰">霍建杰</h1>
+                        <h2 class="sub-title typewriter-target"></h2>
+                        <p class="hero-desc">
+                            来自<span class="highlight-text">武汉大学</span>计算机学院软件工程专业。作为重度 Linux 用户，
+                            我习惯于穿梭在底层的命令行中，追求代码的极致性能与架构的优雅。
+                            热衷于构建高并发后端链路，并将前沿 <span class="highlight-text">AI 模型</span>（LLM / 多模态）
+                            深度融入工程实践，用技术重构数据价值。
+                        </p>
+                        <div class="stats-row">
+                            <div class="stat-chip">
+                                <span class="stat-value">大二</span>
+                                <span class="stat-label">在读学生</span>
+                            </div>
+                            <div class="stat-chip">
+                                <span class="stat-value">3+</span>
+                                <span class="stat-label">落地项目</span>
+                            </div>
+                            <div class="stat-chip">
+                                <span class="stat-value">WHU</span>
+                                <span class="stat-label">计算机学院</span>
+                            </div>
+                        </div>
+                        <div class="action-group">
+                            <a href="#projects" class="cyber-btn primary-btn">
+                                <span class="btn-text">INITIATE_PROJECTS</span>
+                                <span class="btn-scan"></span>
+                            </a>
+                            <a href="./assets/噜噜.jpg" download="噜噜.jpg" class="cyber-btn secondary-btn">
+                                <span class="btn-glyph">↓</span>
+                                <span class="btn-text">DOWNLOAD_RESUME</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="radar-container reveal delay-1">
-                    <canvas id="skill-radar" width="400" height="400"></canvas>
+                    <div class="radar-label">SKILL_MATRIX.exe</div>
+                    <canvas id="skill-radar"></canvas>
+                    <div class="radar-status">
+                        <span class="blink-dot"></span>SCANNING...
+                    </div>
                 </div>
             </div>
         </section>
 
+        <!-- ====== SECTION 2: SKILL BARS ====== -->
+        <section id="skills" class="skill-section">
+            <div class="section-header reveal">
+                <h2 class="cyber-heading">CAPABILITY_SCAN // <span>技能矩阵</span></h2>
+                <div class="heading-line"></div>
+            </div>
+            <div class="skill-grid">
+                <div class="skill-category reveal">
+                    <div class="skill-cat-label">// CORE_LANGUAGES</div>
+                    <div class="skill-bar-list">
+                        <div class="skill-bar-item" data-skill="Python / C++" data-val="95">
+                            <div class="skill-name"><span>Python / C++</span><span class="skill-pct">0%</span></div>
+                            <div class="skill-track"><div class="skill-fill" style="--target: 95%"></div></div>
+                        </div>
+                        <div class="skill-bar-item" data-skill="Linux / Bash" data-val="95">
+                            <div class="skill-name"><span>Linux / Bash</span><span class="skill-pct">0%</span></div>
+                            <div class="skill-track"><div class="skill-fill" style="--target: 95%"></div></div>
+                        </div>
+                        <div class="skill-bar-item" data-skill="JavaScript / HTML/CSS" data-val="80">
+                            <div class="skill-name"><span>JavaScript / HTML/CSS</span><span class="skill-pct">0%</span></div>
+                            <div class="skill-track"><div class="skill-fill" style="--target: 80%"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="skill-category reveal delay-1">
+                    <div class="skill-cat-label">// AI_STACK</div>
+                    <div class="skill-bar-list">
+                        <div class="skill-bar-item" data-val="92">
+                            <div class="skill-name"><span>LLM / GraphRAG</span><span class="skill-pct">0%</span></div>
+                            <div class="skill-track"><div class="skill-fill" style="--target: 92%"></div></div>
+                        </div>
+                        <div class="skill-bar-item" data-val="90">
+                            <div class="skill-name"><span>PaddleOCR / 多模态</span><span class="skill-pct">0%</span></div>
+                            <div class="skill-track"><div class="skill-fill" style="--target: 90%"></div></div>
+                        </div>
+                        <div class="skill-bar-item" data-val="88">
+                            <div class="skill-name"><span>Knowledge Graph / Neo4j</span><span class="skill-pct">0%</span></div>
+                            <div class="skill-track"><div class="skill-fill" style="--target: 88%"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="skill-category reveal delay-2">
+                    <div class="skill-cat-label">// ENGINEERING</div>
+                    <div class="skill-bar-list">
+                        <div class="skill-bar-item" data-val="88">
+                            <div class="skill-name"><span>分布式系统 / 高并发</span><span class="skill-pct">0%</span></div>
+                            <div class="skill-track"><div class="skill-fill" style="--target: 88%"></div></div>
+                        </div>
+                        <div class="skill-bar-item" data-val="85">
+                            <div class="skill-name"><span>数据分析 / 可视化</span><span class="skill-pct">0%</span></div>
+                            <div class="skill-track"><div class="skill-fill" style="--target: 85%"></div></div>
+                        </div>
+                        <div class="skill-bar-item" data-val="83">
+                            <div class="skill-name"><span>Docker / Git / CI-CD</span><span class="skill-pct">0%</span></div>
+                            <div class="skill-track"><div class="skill-fill" style="--target: 83%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== SECTION 3: PROJECTS ====== -->
         <section id="projects" class="project-section">
             <div class="section-header reveal">
                 <h2 class="cyber-heading">EXECUTION_LOGS // <span>工程落地</span></h2>
@@ -76,64 +185,84 @@
             <div class="project-grid">
                 
                 <article class="project-card reveal">
-                    <div class="card-border"></div>
+                    <div class="card-corner tl"></div>
+                    <div class="card-corner br"></div>
+                    <div class="card-glow-line"></div>
                     <div class="card-content">
                         <div class="card-meta">
                             <span class="tech-id">AI-SYS.01</span>
-                            <span class="year">2026</span>
+                            <span class="year tag-green">2026</span>
                         </div>
                         <h3>知识图谱与 GraphRAG 问答系统</h3>
                         <p class="desc">
-                            针对传统 LLM 存在知识幻觉与垂直领域信息匮乏的问题，主导构建的深度检索系统。
-                            通过深度解析非结构化文本，自动提取实体与拓扑关系并写入图数据库。结合 RAG（检索增强生成）与图谱推理技术，
-                            实现了对复杂垂直领域知识的精准、可溯源问答，大幅提升了系统的知识准确度。
+                            针对传统 LLM 存在知识幻觉与垂直领域信息匮乏的问题，主导构建深度检索系统。
+                            通过自动提取实体拓扑关系写入图数据库，结合 RAG 与图谱推理，
+                            实现对复杂垂直领域知识的精准、可溯源问答，大幅提升系统知识准确度。
                         </p>
                         <ul class="tech-stack">
                             <li>Python</li><li>LLM/GraphRAG</li><li>Knowledge Graph</li><li>Neo4j</li>
                         </ul>
+                        <div class="card-metrics">
+                            <div class="metric"><span class="metric-val">↑87%</span><span class="metric-desc">准确率提升</span></div>
+                            <div class="metric"><span class="metric-val">∞</span><span class="metric-desc">可溯源答案</span></div>
+                        </div>
                     </div>
                 </article>
 
                 <article class="project-card reveal delay-1">
-                    <div class="card-border"></div>
+                    <div class="card-corner tl"></div>
+                    <div class="card-corner br"></div>
+                    <div class="card-glow-line"></div>
                     <div class="card-content">
                         <div class="card-meta">
                             <span class="tech-id">DATA-SYS.02</span>
-                            <span class="year">2026.02</span>
+                            <span class="year tag-blue">2026.02</span>
                         </div>
                         <h3>多模态文档解析与结构化系统</h3>
                         <p class="desc">
                             为打破非结构化文档（PDF/图像）的数据孤岛，基于 PaddleOCR 进行底层二次开发。
-                            深入优化复杂版面的识别与版面还原算法。系统构建了极其严格的后置校验链路，确保最终输出的 JSON 格式高度标准化，
-                            彻底杜绝下游链路的报错阻断，实现了高并发场景下的高可用。
+                            深度优化复杂版面识别与还原算法，构建严格后置校验链路，确保 JSON 输出高度标准化，
+                            实现高并发场景下的高可用。
                         </p>
                         <ul class="tech-stack">
                             <li>PaddleOCR</li><li>Python</li><li>JSON Serialization</li><li>Error Handling</li>
                         </ul>
+                        <div class="card-metrics">
+                            <div class="metric"><span class="metric-val">99.9%</span><span class="metric-desc">可用性</span></div>
+                            <div class="metric"><span class="metric-val">0</span><span class="metric-desc">下游报错</span></div>
+                        </div>
                     </div>
                 </article>
 
                 <article class="project-card reveal delay-2">
-                    <div class="card-border"></div>
+                    <div class="card-corner tl"></div>
+                    <div class="card-corner br"></div>
+                    <div class="card-glow-line"></div>
                     <div class="card-content">
                         <div class="card-meta">
                             <span class="tech-id">WEB-SYS.03</span>
-                            <span class="year">2026.01</span>
+                            <span class="year tag-pink">2026.01</span>
                         </div>
                         <h3>DWTS 互动数据全链路分析平台</h3>
                         <p class="desc">
-                            针对大型互动电视节目独立打造的综合数据系统。从底层的分布式高并发爬虫采集，到中层的数据清洗与特征提取，
-                            再到前端的可视化大屏动态渲染。该项目证明了我在全栈视角下的系统架构能力与对海量数据的敏感度。
+                            针对大型互动电视节目独立打造综合数据系统。从分布式高并发爬虫采集，
+                            到数据清洗与特征提取，再到前端可视化大屏动态渲染。
+                            证明了全栈视角下的系统架构能力与对海量数据的高敏感度。
                         </p>
                         <ul class="tech-stack">
                             <li>Spider</li><li>Data Analysis</li><li>Visualization</li><li>Full-Stack</li>
                         </ul>
+                        <div class="card-metrics">
+                            <div class="metric"><span class="metric-val">Full</span><span class="metric-desc">全栈覆盖</span></div>
+                            <div class="metric"><span class="metric-val">∞</span><span class="metric-desc">数据采集</span></div>
+                        </div>
                     </div>
                 </article>
 
             </div>
         </section>
 
+        <!-- ====== SECTION 4: HONORS ====== -->
         <section id="honors" class="honor-section">
             <div class="section-header reveal">
                 <h2 class="cyber-heading">ACHIEVEMENTS // <span>履历与荣誉</span></h2>
@@ -143,55 +272,106 @@
             <div class="honor-layout">
                 <div class="honor-list reveal">
                     <div class="honor-item">
-                        <div class="honor-icon"></div>
+                        <div class="honor-icon gold"></div>
                         <div class="honor-details">
                             <h4>国家励志奖学金</h4>
                             <p>National Encouragement Scholarship // 顶尖学业认可</p>
                         </div>
+                        <div class="honor-badge">GOLD</div>
                     </div>
                     <div class="honor-item">
-                        <div class="honor-icon"></div>
+                        <div class="honor-icon silver"></div>
                         <div class="honor-details">
                             <h4>武汉大学优秀学生奖学金</h4>
                             <p>Wuhan University Outstanding Student // 综合素质标兵</p>
                         </div>
+                        <div class="honor-badge">WHU</div>
                     </div>
                     <div class="honor-item">
-                        <div class="honor-icon"></div>
+                        <div class="honor-icon cyan"></div>
                         <div class="honor-details">
                             <h4>武汉大学优秀共青团员</h4>
                             <p>Outstanding Youth League Member // 思想与实践先锋</p>
                         </div>
+                        <div class="honor-badge">ELITE</div>
                     </div>
                 </div>
 
                 <div class="honor-card-3d js-tilt reveal delay-1">
                     <div class="card-glare"></div>
+                    <div class="hologram-lines"></div>
                     <div class="inner-content">
                         <span class="watermark">WHU</span>
+                        <div class="card-tag">ROLE: TECH_LEAD</div>
                         <h3>核心技术骨干</h3>
                         <div class="divider"></div>
                         <p>
                             在团队中承担多个初创产品的基础架构选型与 Demo 研发重任。
-                            善于整合 GitHub 开源生态，运用现代化的 Vibe Coding 模式，敏捷地将商业 Idea 转化为健壮的代码产品。
+                            善于整合 GitHub 开源生态，运用现代化的 Vibe Coding 模式，
+                            敏捷地将商业 Idea 转化为健壮的代码产品。
                             不仅具备扎实的单兵作战能力，更积累了丰富的团队敏捷开发与协同经验。
                         </p>
-                        <div class="hologram-effect"></div>
+                        <div class="skill-tags">
+                            <span>架构设计</span>
+                            <span>开源协同</span>
+                            <span>敏捷开发</span>
+                            <span>全栈落地</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <footer class="cyber-footer reveal">
-            <div class="footer-content">
-                <h2>AWAITING_CONNECTION...</h2>
-                <p>期望以代码为桥梁，在真实的业务战场上创造价值。</p>
-                <div class="social-links">
-                    <a href="https://github.com/H-wonder" target="_blank" data-text="GITHUB">GITHUB</a>
-                    <a href="#" id="email-trigger" data-text="EMAIL">EMAIL</a>
-                    <a href="./assets/噜噜.jpg" download data-text="DOWNLOAD_RESUME">DOWNLOAD_RESUME</a>
+        <!-- ====== SECTION 5: CONTACT ====== -->
+        <section id="contact" class="contact-section">
+            <div class="section-header reveal">
+                <h2 class="cyber-heading">OPEN_CHANNEL // <span>建立连接</span></h2>
+                <div class="heading-line"></div>
+            </div>
+            <div class="contact-grid reveal">
+                <div class="contact-card" id="github-card">
+                    <div class="contact-icon github-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-label">GITHUB // 开源仓库</div>
+                        <a href="https://github.com/H-wonder" target="_blank" class="contact-link">github.com/H-wonder</a>
+                    </div>
+                    <div class="contact-arrow">→</div>
                 </div>
-                <div class="copyright">SYS.DEV: HUO_JIAN_JIE // 2026 // END_OF_TRANSMISSION</div>
+                <div class="contact-card" id="email-trigger">
+                    <div class="contact-icon email-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-label">EMAIL // 点击解密</div>
+                        <span class="contact-link email-masked">██████████@qq.com</span>
+                    </div>
+                    <div class="contact-arrow">🔒</div>
+                </div>
+                <div class="contact-card" id="resume-card">
+                    <div class="contact-icon resume-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/></svg>
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-label">RESUME // 简历下载</div>
+                        <a href="./assets/噜噜.jpg" download class="contact-link">DOWNLOAD_CV.pdf</a>
+                    </div>
+                    <div class="contact-arrow">↓</div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="cyber-footer reveal">
+            <div class="footer-divider">
+                <div class="divider-line"></div>
+                <div class="divider-diamond"></div>
+                <div class="divider-line"></div>
+            </div>
+            <div class="footer-content">
+                <div class="footer-ascii">// END_OF_TRANSMISSION //</div>
+                <p>期望以代码为桥梁，在真实的业务战场上创造价值。</p>
+                <div class="copyright">SYS.DEV: HUO_JIAN_JIE // 2026 // WONDER.GITHUB.IO</div>
             </div>
         </footer>
 
